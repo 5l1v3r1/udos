@@ -18,6 +18,9 @@ udos -s RFC -t 00:11:22:33:44 -b 668 # Bluetooth ping flood 00:11:22:33:44 with 
 udos -s HTTP -t http://localhost/index.php # HTTP GET flood on localhost, make many index.php requests as possible
 
 Changelog:
-18.07.2011:
+18.07.2011 (v1.1.1):
+    * Fixes and optimizations
+
+18.07.2011 (v1.1):
     + Added support for HTTP GET flood
     + Created changelog

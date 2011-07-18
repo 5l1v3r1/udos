@@ -1,4 +1,4 @@
-#!/usr/bin/python2.7
+#!/usr/bin/env python
 
 #############################################################################
 ##                                                                         ##
@@ -15,7 +15,7 @@
 ##                                                                         ##
 #############################################################################
 
-## thanks to Franck TABARY <franck.tab atat gmail thedot com>, but if you are releasing code on GPL
+## thanks to Franck TABARY <franck.tab atat gmail thedot com> for daemonize function, but if you are releasing code on GPL
 ## you cant use "Copyrght" in script
 
 import re
@@ -196,6 +196,7 @@ def printUsage():
     ''' Prints program usage '''
 
     print "UDoS for GNU/Linux - Universal DoS and DDoS testing tool"
+    print "Supports attacks: TCP/UDP flood, HTTP flood"
     print ""
     print "Usage: udos [option] [long GNU option]"
     print ""
@@ -210,7 +211,7 @@ def printUsage():
     print ""
 
 try:
-    opts, args = getopt.getopt(sys.argv[1:], 'hcds:b:t:p:b:', ['console','debug','help', 'socket=', 'bluetooth', 'target=', 'port=', 'bytes='])
+    opts, args = getopt.getopt(sys.argv[1:], 'hcds:b:t:p:b:', ['console','debug','help', 'socket=', 'target=', 'port=', 'bytes='])
 except getopt.error, msg:
     print msg
     print 'UDoS for GNU/Linux - Universal DoS and DDoS testing tool'
@@ -246,18 +247,17 @@ for o, a in opts:
             exit(0)
 
     if o in ('-s', '--socket'):
+        bluetoothMode = False
+
         if a == "tcp" or a == "TCP":
             useProtocol = "TCP"
-            bluetoothMode = False
         elif a == "udp" or a == "UDP":
             useProtocol = "UDP"
-            bluetoothMode = False
         elif a == "RFC" or a == "rfc" or a == "BT" or a == "bt" or a == "bluetooth" or a == "BLUETOOTH":
             useProtocol = "RFC"
             bluetoothMode = True
         elif a == "http" or a == "www" or a == "HTTP" or a == "WWW":
             useProtocol = "HTTP"
-            bluetoothMode = False
 
         if debugMode == True:
             print "Info: Socket type is "+useProtocol
@@ -267,6 +267,6 @@ if bluetoothMode == False:
 elif bluetoothMode == None:
     print 'UDoS for GNU/Linux - Universal DoS and DDoS testing tool, use --help for usage'
 else:
-    import bluetooth
+    #import bluetooth
     bt_attack()
 
