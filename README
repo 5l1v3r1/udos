@@ -18,6 +18,10 @@ udos -s RFC -t 00:11:22:33:44 -b 668 # Bluetooth ping flood 00:11:22:33:44 with 
 udos -s HTTP -t http://localhost/index.php # HTTP GET flood on localhost, make many index.php requests as possible
 
 Changelog:
+14.08.2011 (v.1.2) <webnull.www@gmail.com>:
+    + Added support for Python 3 (now works with Python 2.6, Python 2.7, Python 3.1 and Python 3.2)
+    + Added check for l2ping
+
 19.07.2011 (v.1.1.1):
     + Added versioning information
 

